@@ -1,42 +1,49 @@
-const Header = (props) => {
-  console.log(props.course.name);
-  return <h1>{props.course.name}</h1>;
+import { useState } from "react";
+
+const Header = ({ course }) => {
+  return <h1>{course}</h1>;
 };
 
-const Content = (props) => {
-  console.log(props.parts);
+const Content = ({ parts }) => {
   return (
     <>
-      <Part
-        part={props.parts.parts[0].name}
-        exercise={props.parts.parts[0].exercises}
-      />
-      <Part
-        part={props.parts.parts[1].name}
-        exercise={props.parts.parts[1].exercises}
-      />
-      <Part
-        part={props.parts.parts[2].name}
-        exercise={props.parts.parts[2].exercises}
-      />
+      <Part part={parts[0].name} exercise={parts[0].exercises} />
+      <Part part={parts[1].name} exercise={parts[1].exercises} />
+      <Part part={parts[2].name} exercise={parts[2].exercises} />
     </>
   );
 };
 
-const Part = (props) => (
-  <p>
-    {props.part} {props.exercise}
-  </p>
-);
+const Part = ({ part, exercise }) => {
+  return (
+    <p>
+      {part} {exercise}
+    </p>
+  );
+};
 
-const Footer = (props) => {
+const Footer = ({ parts }) => {
   //todo
-  const total =
-    props.parts.parts[0].exercises +
-    props.parts.parts[1].exercises +
-    props.parts.parts[2].exercises;
+  const total = parts[0].exercises + parts[1].exercises + parts[2].exercises;
 
   return <p>Number of exercises {total}</p>;
+};
+
+const Display = ({ counter }) => {
+  return (
+    <>
+      <div> Left: {counter.left}</div>
+      <div> Right: {counter.right}</div>
+    </>
+  );
+};
+
+const Button = ({ funOnClick, text }) => {
+  return (
+    <>
+      <button onClick={funOnClick}>{text}</button>
+    </>
+  );
 };
 
 const App = () => {
@@ -58,11 +65,41 @@ const App = () => {
     ],
   };
 
+  const [clicks, setClicks] = useState({
+    left: 0,
+    right: 0,
+  });
+
+  const handlePlusLeft = () => {
+    setClicks({
+      left: clicks.left + 1,
+      right: clicks.right,
+    });
+  };
+
+  const handleReset = () => {
+    setClicks({
+      left: 0,
+      right: 0,
+    });
+  };
+
+  const handlePlusRight = () => {
+    setClicks({
+      left: clicks.left,
+      right: clicks.right + 1,
+    });
+  };
+
   return (
     <div>
-      <Header course={course} />
-      <Content parts={course} />
-      <Footer parts={course} />
+      <Header course={course.name} />
+      <Content parts={course.parts} />
+      <Footer parts={course.parts} />
+      <Display counter={clicks} />
+      <Button funOnClick={handlePlusLeft} text={"Left"} />
+      <Button funOnClick={handleReset} text={"Reset"} />
+      <Button funOnClick={handlePlusRight} text={"Right"} />
     </div>
   );
 };
